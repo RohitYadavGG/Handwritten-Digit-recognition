@@ -12,7 +12,13 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: Install Git LFS
+        run: git lfs install
+
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://RohitYadavGG:$HF_TOKEN@huggingface.co/spaces/RohitYadavGG/Handwritten-Digit-recognition main
+        run: |
+          git lfs pull
+          git push --force https://RohitYadavGG:$HF_TOKEN@huggingface.co/spaces/RohitYadavGG/Handwritten-Digit-recognition main
