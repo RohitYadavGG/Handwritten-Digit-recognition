@@ -24,6 +24,26 @@ A professional, cinematic web application that uses a custom **Convolutional Neu
 
 ---
 
+## 📸 App Previews
+
+**Web Interface**
+<div align="center">
+  <img src="Images/preview_1.png" width="48%" alt="Frontend Preview 1">
+  <img src="Images/preview_2.png" width="48%" alt="Frontend Preview 2">
+  <img src="Images/preview_3.png" width="48%" alt="Frontend Preview 3">
+  <img src="Images/preview_4.png" width="48%" alt="Frontend Preview 4">
+  <img src="Images/preview_5.png" width="48%" alt="Frontend Preview 5">
+  <img src="Images/preview_6.png" width="48%" alt="Frontend Preview 6">
+  <img src="Images/preview_7.png" width="48%" alt="Frontend Preview 7">
+</div>
+
+**Terminal & Prediction Details**
+<div align="center">
+  <img src="Images/preview_8.png" width="90%" alt="Terminal Prediction Output">
+</div>
+
+---
+
 ## 🛠️ Technical Stack
 
 - **Machine Learning**: TensorFlow, Keras, NumPy, OpenCV
