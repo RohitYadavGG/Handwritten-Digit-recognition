@@ -118,7 +118,7 @@ model.compile(optimizer=Adam(learning_rate=0.001),
 callbacks = [
     EarlyStopping(monitor='val_loss', patience=4, restore_best_weights=True),
     ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2),
-    ModelCheckpoint('best_model.h5', save_best_only=True)
+    ModelCheckpoint('model_cnn.keras', save_best_only=True)
 ]
 
 # 6) Train
