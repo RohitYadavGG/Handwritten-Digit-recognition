@@ -1,0 +1,17 @@
+# Python Virtual Environments & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# App Specific Uploads & Logs
+mobile_uploads/
+final_processed_images/
+debug_images/
+handwritten_Photos/
+
+# Excluded by Request
+Dockerfile
+*.pdf

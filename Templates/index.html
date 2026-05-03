@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digit Recognition - ML Model</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../Static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Background Container -->
+    <div class="mesh-container">
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- SVG Noise Filter Definition -->
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <filter id="noiseFilter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+        </filter>
+    </svg>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <svg width="48" height="48" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Multiple gradients for premium look -->
+                        <linearGradient id="logoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667dff;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff006e;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="logoGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#667dff;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="logoGlow">
+                            <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Outer colored square frame -->
+                    <rect x="5" y="5" width="170" height="170" rx="16" fill="none" stroke="url(#logoGrad1)"
+                        stroke-width="2.5" opacity="0.8" />
+
+                    <!-- Inner accent -->
+                    <rect x="10" y="10" width="160" height="160" rx="14" fill="url(#logoGrad2)" opacity="0.1" />
+
+                    <!-- Your logo centered and scaled properly -->
+                    <g transform="translate(15, 55) scale(0.48)">
+                        <path
+                            d="M 232.72 165.65 C228.33,161.26 223.82,152.53 223.69,148.19 C223.56,143.63 227.19,140.49 233.66,139.56 C248.00,137.52 262.83,129.34 269.82,119.61 C271.57,117.17 273.00,114.96 273.00,114.69 C273.00,114.43 270.26,115.06 266.91,116.10 C259.36,118.45 243.93,118.65 235.69,116.51 C209.31,109.64 192.77,83.56 196.95,55.43 C199.32,39.53 205.73,26.20 215.95,15.92 C227.61,4.20 238.17,0.00 256.02,0.00 C268.27,0.00 273.48,1.16 283.05,6.01 C306.16,17.73 318.91,48.88 315.08,84.26 C311.27,119.39 295.08,146.08 269.33,159.66 C259.19,165.01 247.05,169.00 240.92,169.00 C236.75,169.00 235.60,168.53 232.72,165.65 ZM 266.12 96.46 C273.33,93.92 277.54,90.34 281.13,83.69 C284.39,77.66 284.48,77.20 284.49,65.50 C284.50,51.19 282.18,42.94 275.91,35.00 C266.75,23.42 250.42,22.43 239.66,32.80 C230.23,41.90 225.29,61.99 229.20,75.38 C234.09,92.13 251.00,101.78 266.12,96.46 ZM 43.50 160.13 C22.95,154.23 8.86,137.95 2.80,113.12 C1.00,105.77 0.70,101.56 0.75,84.50 C0.82,62.17 1.95,54.25 6.90,41.43 C15.17,20.01 28.96,6.03 46.37,1.39 C53.18,-0.42 69.16,-0.37 76.31,1.49 C93.91,6.08 106.42,18.72 113.91,39.50 C118.15,51.24 120.00,64.02 119.99,81.41 C119.98,106.73 115.84,123.97 106.39,138.06 C98.64,149.61 88.21,157.23 75.50,160.64 C68.40,162.54 50.91,162.26 43.50,160.13 ZM 68.32 134.07 C75.26,131.43 82.31,121.57 85.52,110.00 C88.17,100.46 88.84,63.00 86.55,52.92 C83.70,40.39 77.81,31.18 70.54,27.88 C66.13,25.88 56.73,25.39 52.62,26.96 C48.50,28.52 42.02,35.04 39.36,40.28 C34.06,50.74 32.71,58.76 32.60,80.50 C32.49,102.43 33.32,108.28 38.04,118.72 C41.24,125.80 46.08,131.27 51.08,133.44 C54.95,135.12 64.63,135.47 68.32,134.07 ZM 131.72 99.75 C130.46,98.81 130.01,96.70 129.88,91.18 C129.62,79.92 127.97,80.50 160.49,80.50 C192.54,80.50 190.91,79.93 190.97,91.19 C191.02,101.30 191.96,101.00 159.97,101.00 C140.25,101.00 132.95,100.68 131.72,99.75 ZM 238.04 75.07 C236.44,72.09 236.77,70.42 239.63,67.03 C245.31,60.28 255.27,57.60 263.95,60.48 C272.97,63.48 278.84,71.76 274.80,75.80 C272.94,77.66 271.20,77.25 267.18,74.02 C260.62,68.75 252.15,68.77 247.10,74.05 C243.80,77.50 239.59,77.97 238.04,75.07 ZM 42.20 76.80 C39.69,74.29 40.83,69.85 44.99,65.90 C53.36,57.93 67.27,57.87 75.82,65.77 C80.83,70.39 81.66,72.96 79.14,76.07 C77.02,78.70 75.84,78.40 69.10,73.48 C66.51,71.59 64.46,71.00 60.45,71.00 C55.90,71.00 54.62,71.48 51.00,74.50 C46.60,78.17 44.20,78.80 42.20,76.80 Z"
+                            fill="url(#logoGrad1)" filter="url(#logoGlow)" />
+                    </g>
+                </svg>
+            </div>
+            <nav class="nav">
+                <a href="#intro" class="nav-link">Introduction</a>
+                <a href="#draw" class="nav-link">Draw</a>
+                <a href="#upload" class="nav-link">Upload</a>
+                <a href="#features" class="nav-link">Model</a>
+                <a href="#metrics" class="nav-link">Metrics</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Section 1: Introduction -->
+    <section id="intro" class="section hero" style="position: relative; overflow: hidden;">
+        <!-- Spline Background wrapper - replacing Vanta temporarily -->
+        <div id="spline-wrapper"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 1;">
+            <spline-viewer url="https://prod.spline.design/gx72CN6QEE-kjy6H/scene.splinecode"></spline-viewer>
+        </div>
+        <!-- Targeted corner fade + click blocker over Spline logo -->
+        <div style="position: absolute; bottom: 0; right: 0; width: 380px; height: 160px; z-index: 5; pointer-events: all; cursor: default;
+                    background: radial-gradient(ellipse at bottom right, #000000 35%, transparent 72%);"></div>
+
+        
+        <div class="container" style="position: relative; z-index: 2;">
+            <div class="hero-content scroll-animate">
+                <h1 class="hero-title">
+                    <span id="typed-text"></span><span class="typewriter-cursor">|</span>
+                </h1>
+                <div class="cta-buttons hide-initial">
+                    <a href="#draw" class="btn btn-primary">Start Drawing</a>
+                    <a href="#upload" class="btn btn-secondary">Upload Image</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Drawing Canvas -->
+    <section id="draw" class="section draw-section">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Draw Your Digit</h2>
+            <div class="draw-container scroll-animate delay-100">
+                <div class="canvas-panel">
+                    <div class="canvas-wrapper">
+                        <canvas id="drawingCanvas" width="28" height="28"></canvas>
+                    </div>
+                    <div class="canvas-hint"><i class="fas fa-pen-nib"></i> Draw a digit (0-9) inside the box <br> model can make mistakes</div>
+                </div>
+                <div class="draw-controls">
+                    <div class="buttons-group">
+                        <button class="btn btn-primary" id="predictBtn">
+                            <i class="fas fa-wand-magic-sparkles"></i> Predict
+                        </button>
+                        <button class="btn btn-outline" id="clearBtn">
+                            <i class="fas fa-eraser"></i> Clear
+                        </button>
+                    </div>
+                    <div class="prediction-result" id="drawPrediction" style="display: none;">
+                        <p class="result-label">Neural Network Prediction</p>
+                        <p class="result-value" id="drawResultValue">-</p>
+                        <div class="confidence-bar-container">
+                            <div class="confidence-bar" id="drawConfidenceBar" style="width: 0%;"></div>
+                        </div>
+                        <p class="result-confidence" id="drawConfidence">Confidence: -</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Upload Image -->
+    <section id="upload" class="section upload-section">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Upload Image</h2>
+            <div class="upload-container scroll-animate delay-100">
+                <div class="upload-panel">
+                    <div class="upload-box" id="uploadBox">
+                        <div class="upload-box-inner">
+                            <div class="icon-container">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="url(#uploadGrad)"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <defs>
+                                        <linearGradient id="uploadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:var(--color-primary);stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:var(--color-secondary);stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <h3 class="upload-title">Select an Image</h3>
+                            <p class="upload-text">Drag and drop your file here, or click to browse</p>
+                            <div class="upload-badge">PNG, JPG, JPEG, WEBP</div>
+                            <div class="upload-caution">
+                                *Upload clear handwritten digits on white background for best results(Results May Vary) * <br> Model can make mistakes, especially with unclear or stylized digits.
+                            </div>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                    </div>
+                    <div class="upload-preview" id="uploadPreview" style="display: none;">
+                        <img id="previewImg" alt="preview">
+                    </div>
+                </div>
+                <div class="upload-controls">
+                    <div class="buttons-group">
+                        <button class="btn btn-primary" id="uploadPredictBtn" style="display: none;">
+                            <i class="fas fa-wand-magic-sparkles"></i> Predict
+                        </button>
+                        <button class="btn btn-outline" id="removeImageBtn" style="display: none;">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                    <div class="prediction-result" id="uploadPrediction" style="display: none;">
+                        <p class="result-label">Neural Network Prediction</p>
+                        <p class="result-value" id="uploadResultValue">-</p>
+                        <div class="confidence-bar-container">
+                            <div class="confidence-bar" id="uploadConfidenceBar" style="width: 0%;"></div>
+                        </div>
+                        <p class="result-confidence" id="uploadConfidence">Confidence: -</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Model Features -->
+    <section id="features" class="section features-section">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Model Information</h2>
+            <div class="features-grid">
+                <!-- Feature Card 1 -->
+                <div class="feature-card scroll-animate delay-100">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667dff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                            stroke="url(#grad1)" fill="url(#grad1)" stroke-width="1" />
+                    </svg>
+                    <h3>Accuracy</h3>
+                    <p class="feature-value">99.36%</p>
+                    <p class="feature-desc">On MNIST dataset</p>
+                </div>
+                <!-- Feature Card 2 -->
+                <div class="feature-card scroll-animate delay-200">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#ff006e;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="12" cy="12" r="10" stroke="url(#grad2)" fill="url(#grad2)" opacity="0.1"
+                            stroke-width="1"></circle>
+                        <path d="M12 6v6l4 2" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <h3>Parameters</h3>
+                    <p class="feature-value">475K</p>
+                    <p class="feature-desc">Total model parameters</p>
+                </div>
+                <!-- Feature Card 3 -->
+                <div class="feature-card scroll-animate delay-300">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ff006e;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#667dff;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                            stroke="url(#grad3)" fill="url(#grad3)" opacity="0.15" stroke-width="1" />
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                            stroke="url(#grad3)" stroke-width="2" fill="none" />
+                    </svg>
+                    <h3>Test Set</h3>
+                    <p class="feature-value">10,000</p>
+                    <p class="feature-desc">MNIST test images</p>
+                </div>
+                <!-- Feature Card 4 -->
+                <div class="feature-card scroll-animate delay-400">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667dff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" stroke="url(#grad4)"
+                            fill="url(#grad4)" opacity="0.15" stroke-width="1" />
+                        <polyline points="13 2 13 9 20 9" stroke="url(#grad4)" stroke-width="2" fill="none" />
+                        <path d="M9 13h6M9 17h3" stroke="url(#grad4)" stroke-width="2" stroke-linecap="round"
+                            fill="none" />
+                    </svg>
+                    <h3>Metrics</h3>
+                    <p class="feature-value">99.36%</p>
+                    <p class="feature-desc">F1-Score & Recall</p>
+                </div>
+            </div>
+
+        </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Performance Metrics (Chart 1) -->
+    <section id="metrics" class="section">
+        <div class="container">
+            <h2 class="section-title scroll-animate">Performance Metrics</h2>
+
+            <div class="metrics-layout">
+                <!-- Part 1: Chart on Left, Info on Right -->
+                <div class="metric-row">
+                    <div class="metric-chart scroll-animate delay-100">
+                        <div class="chart-card">
+                            <div class="card-content">
+                                <h4 class="chart-title">Per-Digit Accuracy</h4>
+                                <div id="per-class-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-text scroll-animate delay-200">
+                        <h3 class="metric-heading">Flawless Precision.</h3>
+                        <p class="metric-desc">Analyzing performance across every single digit with pinpoint accuracy.
+                            The CNN isolates specific graphical patterns, achieving an error rate approaching zero
+                            across all numerical classes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Chart 2 -->
+    <section class="section">
+        <div class="container">
+            <div class="metrics-layout">
+                <!-- Part 2: Info on Left, Chart on Right -->
+                <div class="metric-row">
+                    <div class="metric-text scroll-animate delay-100">
+                        <h3 class="metric-heading">State-of-the-Art Architecture.</h3>
+                        <p class="metric-desc">Achieving an extraordinary 99.36% F1-score. Our deep neural network is
+                            highly tuned for robust generalization, minimizing false positives while maximizing recall
+                            across massive testing sets.</p>
+                    </div>
+                    <div class="metric-chart scroll-animate delay-200">
+                        <div class="chart-card">
+                            <div class="card-content">
+                                <h4 class="chart-title">Overall Performance</h4>
+                                <div id="metrics-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Chart 3 -->
+    <section class="section">
+        <div class="container">
+            <div class="metrics-layout">
+                <!-- Part 3: Chart on Left, Info on Right -->
+                <div class="metric-row">
+                    <div class="metric-chart scroll-animate delay-100">
+                        <div class="chart-card">
+                            <div class="card-content">
+                                <h4 class="chart-title">Training History</h4>
+                                <div id="training-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-text scroll-animate delay-200">
+                        <h3 class="metric-heading">Rapid Convergence.</h3>
+                        <p class="metric-desc">Reaching peak performance in record time. Validation loss drastically
+                            minimizes within the earliest epochs, demonstrating highly efficient learning capacity
+                            without over-fitting the training data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Footer -->
+    <footer id="footer" class="section footer-section">
+        <div class="container footer-container scroll-animate">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <h3 class="footer-heading">MNIST Digit Recognition</h3>
+                    <p class="footer-desc">Model tested on 10,000 MNIST test images.</p>
+                    <p class="footer-desc">Designed, Developed, and Modeled by <strong>Rohit
+                            Yadav</strong>.<br>Encompassing Frontend, Backend, Machine Learning, and Testing.</p>
+                </div>
+                <div class="footer-right">
+                    <h4 class="footer-subheading">Connect</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/RohitYadavGG" target="_blank" class="social-icon github-icon"
+                            title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/rohityadavgg/" target="_blank"
+                            class="social-icon linkedin-icon" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.instagram.com/rohit_1709_/" target="_blank" class="social-icon insta-icon"
+                            title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <a href="mailto:yrohitprem@gmail.com" class="footer-email">yrohitprem@gmail.com</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Rohit Yadav. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner -->
+    <div class="spinner" id="spinner" style="display: none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="../Static/Script.js"></script>
+    <script src="../Static/charts.js"></script>
+    <script src="../Static/scroll-animations.js"></script>
+    <!-- particles.js disabled - replaced by Vanta Globe -->
+    <!-- <script src="../Static/particles.js"></script> -->
+
+    <!-- Vanta Globe (DISABLED FOR NOW) -->
+    <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    -->
+
+    <!-- Spline Viewer Script -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.90/build/spline-viewer.js"></script>
+
+    <script>
+        // Initialize Vanta immediately but keep wrapper invisible
+        // Script.js typewriter will call window.revealVantaGlobe() after typing ends
+        /*
+        if (document.getElementById('vanta-globe')) {
+            VANTA.GLOBE({
+                el: "#vanta-globe",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x667dff,
+                color2: 0x00d4ff,
+                backgroundColor: 0x0a0a0a
+            });
+        }
+        */
+
+        // Called by Script.js after typewriter + 0.4s delay
+        window.revealVantaGlobe = function () {
+            // const vantaWrapper = document.getElementById('vanta-wrapper');
+            // if (vantaWrapper) {
+            //     vantaWrapper.style.opacity = '0.35';
+            // }
+            const splineWrapper = document.getElementById('spline-wrapper');
+            if (splineWrapper) {
+                splineWrapper.style.opacity = '1';
+            }
+        };
+    </script>
+</body>
+
+</html>
