@@ -46,7 +46,7 @@ A professional, cinematic web application that uses a custom **Convolutional Neu
 
 ## 🛠️ Technical Stack
 
-- **Machine Learning**: TensorFlow, Keras, NumPy, OpenCV
+- **Machine Learning**: TensorFlow, Keras, NumPy, OpenCV, Scikit-learn
 - **Backend Server**: Python, Flask
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Visualizations**: ApexCharts
@@ -72,7 +72,18 @@ It's recommended to create a virtual environment first, but you can directly ins
 pip install -r requirements.txt
 ```
 
-### 3. Run the App!
+### 3. Train the Model (Optional)
+If you want to retrain the CNN from scratch and see how 99.36% accuracy is achieved:
+```bash
+python train_model.py
+```
+This script will:
+- Download and preprocess the MNIST dataset automatically
+- Build and train the CNN architecture over 20 Epochs
+- Save training progress graphs (`output_training_curves.png`, `output_confusion_matrix.png`)
+- Save the final trained model as `model_cnn.keras`
+
+### 4. Run the App!
 Start the Flask server:
 ```bash
 python app.py
@@ -118,6 +129,15 @@ To handle messy real-world photos uploaded from phones, the backend runs a sophi
 5. Aspect-ratio-preserving resize to 28x28
 6. Center-of-mass alignment
 7. Float normalization (0-1) for the model.
+
+### 3. The Model Training Script (`train_model.py`)
+The repository includes the **complete CNN training script** used to build this model from scratch. Running it will:
+- Train the exact same 475,434-parameter CNN architecture on MNIST (60,000 images).
+- Use the **Adam Optimizer** and **Categorical Cross-Entropy** loss to push accuracy past 99%.
+- Apply **Early Stopping** and **ReduceLROnPlateau** callbacks to prevent overfitting.
+- Generate training curves showing **Accuracy vs Epoch** and **Loss vs Epoch** graphs.
+- Output a full **Confusion Matrix** and per-digit **Precision / Recall / F1-Score** report.
+- Save the final trained model as `model_cnn.keras`.
 
 ---
 
