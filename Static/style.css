@@ -975,6 +975,7 @@ spline-viewer::part(logo) {
   padding: 1.5px;
   background: conic-gradient(from var(--border-angle), #667dff, #00d4ff, #ff006e, #00f5ff, #667dff);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: border-spin 3s linear infinite;
